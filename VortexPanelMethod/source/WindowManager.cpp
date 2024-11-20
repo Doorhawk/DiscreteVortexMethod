@@ -205,7 +205,6 @@ void WindowManager::drawStreamlines() {
     
     Color lcol = Color(0, 0, 0);
     if (streamlines.size() != 0) {
-        endLine = streamlines[0].size();
         for (int i = 0, size = streamlines.size(); i < size; i++) {
             for (int j = startLine, sizej = endLine - 1; j < sizej; j++) {
                 sf::VertexArray line(sf::Lines, 2);
@@ -216,7 +215,7 @@ void WindowManager::drawStreamlines() {
                 window.draw(line);
             }
         }
-        /*if (endLine < streamlines[0].size() / 2) {
+        if (endLine < streamlines[0].size() / 2) {
             endLine += 1;
         }
         else if (startLine < endLine - 1) {
@@ -226,7 +225,7 @@ void WindowManager::drawStreamlines() {
         }
         else {
             startLine = 0, endLine = 2;
-        }*/
+        }
     }
 }
 void WindowManager::drawPressure() {
@@ -286,7 +285,7 @@ void WindowManager::drawText() {
     text.setString(printtext); 
     text.setCharacterSize(20); 
     text.setFillColor(sf::Color(0, 0, 0, 200));
-    text.setPosition(wWidth / 5, wHeight / 4);
+    text.setPosition(wWidth / 10, wHeight / 10);
     window.draw(text);
 }
 void WindowManager::printStartInf() {
@@ -328,7 +327,7 @@ void WindowManager::printStartInf() {
     }
 }
 void WindowManager::createStreamlines() {
-    int nlin = 41;
+    int nlin = 31;
     double step = 0.02;
     int iter = 4 / step;
     streamlines.resize(nlin);
