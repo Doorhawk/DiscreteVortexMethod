@@ -26,6 +26,10 @@ WindowManager::WindowManager() {
     endLine = 2;
 
     printStartInf();
+
+    if (!font.loadFromFile("font/HomeVideo-Regular.otf")) { // Убедитесь, что файл шрифта доступен по указанному пути
+        std::cout << "font errror"; // Возвращаем ошибку, если шрифт не загружен
+    }
 }
 void WindowManager::show() {
     while (window.isOpen())
@@ -34,7 +38,7 @@ void WindowManager::show() {
         while (window.pollEvent(event)){
             controlButtons(event);
         }
-        window.clear(Color::Black);
+        window.clear(Color::White);
         drawFrame();
         window.display();
     }
@@ -181,10 +185,11 @@ void WindowManager::drawFrame() {
         drawPressure();
     if (isAnglePlot)
         drawAnglePlot();
+    drawText();
 }
 void WindowManager::drawWing() {
     CircleShape shape(2.f);
-    shape.setFillColor(Color::Yellow);
+    shape.setFillColor(Color::Black);
     for (int i = 0, size = wing.panels.size(); i < size; i++) {
         if (isPresure) {
             if (i < size / 2)
@@ -197,19 +202,21 @@ void WindowManager::drawWing() {
     }
 }
 void WindowManager::drawStreamlines() {
+    
+    Color lcol = Color(0, 0, 0);
     if (streamlines.size() != 0) {
-
+        endLine = streamlines[0].size();
         for (int i = 0, size = streamlines.size(); i < size; i++) {
             for (int j = startLine, sizej = endLine - 1; j < sizej; j++) {
                 sf::VertexArray line(sf::Lines, 2);
                 line[0].position = sf::Vector2f(sizeСoeff * streamlines[i][j].x + 350, 400 - sizeСoeff * streamlines[i][j].y);
                 line[1].position = sf::Vector2f(sizeСoeff * streamlines[i][j + 1].x + 350, 400 - sizeСoeff * streamlines[i][j + 1].y);
-                line[0].color = Color(255, 255, 255);
-                line[1].color = Color(255, 255, 255);
+                line[0].color = lcol;
+                line[1].color = lcol;
                 window.draw(line);
             }
         }
-        if (endLine < streamlines[0].size() / 2) {
+        /*if (endLine < streamlines[0].size() / 2) {
             endLine += 1;
         }
         else if (startLine < endLine - 1) {
@@ -219,7 +226,7 @@ void WindowManager::drawStreamlines() {
         }
         else {
             startLine = 0, endLine = 2;
-        }
+        }*/
     }
 }
 void WindowManager::drawPressure() {
@@ -249,7 +256,7 @@ void WindowManager::drawAnglePlot() {
     float rad = 3;
     CircleShape shape(rad);
     shape.setRadius(rad);
-    shape.setFillColor(Color::White);
+    shape.setFillColor(Color::Black);
     for (int i = 0, size = anglePlot.size(); i < size; i++) {
         shape.setPosition(sizeСoeff * anglePlot[i].x / 20 + 350 - rad, 650 - sizeСoeff / 4 * anglePlot[i].y - rad);
         window.draw(shape);
@@ -266,6 +273,21 @@ void WindowManager::drawAnglePlot() {
     line[0].position = sf::Vector2f(sizeСoeff * 0 + 350, 650 - sizeСoeff / 4 * 0);
     line[1].position = sf::Vector2f(sizeСoeff * 0 + 350, 650 - sizeСoeff / 4 * 1);
     window.draw(line);
+}
+void WindowManager::drawText() {
+    Text text;
+    text.setFont(font);
+    ostringstream oss;
+    oss << "NACA  " << m << p << t << endl
+        << "alpha " <<angle<<endl;
+    oss.precision(3);
+    oss << "Cl    " << wing.Cy;
+    string printtext = oss.str();
+    text.setString(printtext); 
+    text.setCharacterSize(20); 
+    text.setFillColor(sf::Color(0, 0, 0, 200));
+    text.setPosition(wWidth / 5, wHeight / 4);
+    window.draw(text);
 }
 void WindowManager::printStartInf() {
     cout << "m" << "\t" << "p" << "\t" << "t" << "\t" << "n" << "\t" << "angle" << endl;
@@ -306,7 +328,7 @@ void WindowManager::printStartInf() {
     }
 }
 void WindowManager::createStreamlines() {
-    int nlin = 21;
+    int nlin = 41;
     double step = 0.02;
     int iter = 4 / step;
     streamlines.resize(nlin);

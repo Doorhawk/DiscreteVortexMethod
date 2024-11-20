@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <vector>
+#include <sstream>
 #include "Wing.h"
 #include "Panel.h"
 using namespace sf;
@@ -18,6 +19,7 @@ private:
     void drawPressure(); 
     void drawAnglePlot(); 
     void controlButtons(Event event); 
+    void drawText();
     void printStartInf();
     void createStreamlines();
     double m;
@@ -42,4 +44,5 @@ private:
     int size—oeff;      // zoom
     int startLine;      // for streamlines animation
     int endLine;        // 
+    Font font;
 };

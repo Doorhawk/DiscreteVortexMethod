@@ -19,6 +19,9 @@
     <Filter Include="Файлы ресурсов\fig">
       <UniqueIdentifier>{c229eaea-c5d6-4a95-a85a-8a0bfb686984}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы ресурсов\font">
+      <UniqueIdentifier>{9e829c87-4b6d-4557-b800-f72acdbe751d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\openal32.dll">
@@ -93,5 +96,10 @@
     <Image Include="..\fig\streamlines2.gif">
       <Filter>Файлы ресурсов\fig</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="font\arialmt.ttf">
+      <Filter>Файлы ресурсов\font</Filter>
+    </Font>
   </ItemGroup>
 </Project>

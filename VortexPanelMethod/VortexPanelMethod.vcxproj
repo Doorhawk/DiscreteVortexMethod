@@ -48,6 +48,9 @@
     <Image Include="..\fig\streamline1.gif" />
     <Image Include="..\fig\streamlines2.gif" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="font\arialmt.ttf" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
