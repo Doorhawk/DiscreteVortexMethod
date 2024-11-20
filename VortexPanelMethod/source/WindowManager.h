@@ -38,6 +38,7 @@ private:
     int wHeight; 
     int wWidth;
     bool areStreamlines;
+    bool areMoveStreamlines;
     bool isPresure;
     bool isAnglePlot;
     bool isHelpText;

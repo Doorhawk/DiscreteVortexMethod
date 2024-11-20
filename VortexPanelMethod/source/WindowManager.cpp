@@ -18,6 +18,7 @@ WindowManager::WindowManager() {
 	wing.setWingPatametrs(n, m, p, t);
 
     areStreamlines = true;
+    areMoveStreamlines = true;
     isPresure = true;
     isAnglePlot = true;
     isHelpText = true;
@@ -141,6 +142,13 @@ void WindowManager::controlButtons(Event event) {
         if (event.key.code == Keyboard::H) {
             isHelpText = isHelpText ? false : true;
         }
+        if (event.key.code == Keyboard::K) {
+            areMoveStreamlines = areMoveStreamlines ? false : true;
+            if (areMoveStreamlines) {
+                endLine = 2;
+                startLine = 0;
+            }
+        }
         if (event.key.code == Keyboard::I) {
             anglePlot.push_back(point(solvedangle, wing.Cy));
         }
@@ -163,6 +171,7 @@ void WindowManager::controlButtons(Event event) {
             cout << "pressure is visible   - P" << endl;
             cout << "angle plot is visible - O" << endl;
             cout << "delete angle data     - J" << endl;
+            cout << "movement of lines     - K" << endl;
             cout << "help info is visible  - H" << endl;
         }
     }
@@ -205,6 +214,10 @@ void WindowManager::drawStreamlines() {
     
     Color lcol = Color(0, 0, 0);
     if (streamlines.size() != 0) {
+        if (!areMoveStreamlines) {
+            endLine = streamlines[0].size() - 1;
+            startLine = 0;
+        }
         for (int i = 0, size = streamlines.size(); i < size; i++) {
             for (int j = startLine, sizej = endLine - 1; j < sizej; j++) {
                 sf::VertexArray line(sf::Lines, 2);
@@ -215,17 +228,20 @@ void WindowManager::drawStreamlines() {
                 window.draw(line);
             }
         }
-        if (endLine < streamlines[0].size() / 2) {
-            endLine += 1;
-        }
-        else if (startLine < endLine - 1) {
-            startLine += 1;
-            if (endLine < streamlines[0].size() - 1)
+        if (areMoveStreamlines) {
+            if (endLine < streamlines[0].size() / 3) {
                 endLine += 1;
+            }
+            else if (startLine < endLine - 1) {
+                startLine += 1;
+                if (endLine < streamlines[0].size() - 1)
+                    endLine += 1;
+            }
+            else {
+                startLine = 0, endLine = 2;
+            }
         }
-        else {
-            startLine = 0, endLine = 2;
-        }
+        
     }
 }
 void WindowManager::drawPressure() {
@@ -323,6 +339,7 @@ void WindowManager::printStartInf() {
         cout << "pressure is visible   - P" << endl;
         cout << "angle plot is visible - O" << endl;
         cout << "delete angle data     - J" << endl;
+        cout << "movement of lines     - K" << endl;
         cout << "help info is visible  - H" << endl;
     }
 }
