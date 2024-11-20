@@ -86,8 +86,7 @@ void Wing::solve() {
         }
     }
     Cy = Gamma * 2 / velocity.abs() / 1;
-    if (Cy < 1e-10)
-        Cy = 0;
+   
 }
 
 point Wing::getVelocity(point x) {
