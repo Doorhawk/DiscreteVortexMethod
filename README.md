@@ -5,7 +5,7 @@
 
 ![p1](./fig/streamline1.gif)
 
-![p2](./fig/streamline2.gif)
+![p2](./fig/streamlines2.gif)
 
 и распределение давлений вдоль верхней и нижней поверхностей крыла:
 
