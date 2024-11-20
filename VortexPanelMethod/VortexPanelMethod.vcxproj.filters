@@ -16,6 +16,9 @@
     <Filter Include="Файлы ресурсов\lib">
       <UniqueIdentifier>{4fffe0f7-1d44-4b6e-8b7f-03ee389fc878}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы ресурсов\fig">
+      <UniqueIdentifier>{c229eaea-c5d6-4a95-a85a-8a0bfb686984}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\openal32.dll">
@@ -79,5 +82,16 @@
     <ClInclude Include="source\Wing.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\fig\pressure.gif">
+      <Filter>Файлы ресурсов\fig</Filter>
+    </Image>
+    <Image Include="..\fig\streamline1.gif">
+      <Filter>Файлы ресурсов\fig</Filter>
+    </Image>
+    <Image Include="..\fig\streamlines2.gif">
+      <Filter>Файлы ресурсов\fig</Filter>
+    </Image>
   </ItemGroup>
 </Project>

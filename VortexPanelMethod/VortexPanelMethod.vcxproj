@@ -43,6 +43,11 @@
     <ClInclude Include="source\WindowManager.h" />
     <ClInclude Include="source\Wing.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\fig\pressure.gif" />
+    <Image Include="..\fig\streamline1.gif" />
+    <Image Include="..\fig\streamlines2.gif" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
