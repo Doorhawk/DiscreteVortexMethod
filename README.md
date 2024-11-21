@@ -1,4 +1,4 @@
-# **Vortex Panel Method**
+# **Discrete Vortex Method**
 
 ![p1](./fig/head.png)
 
