@@ -64,11 +64,13 @@ public:
         auto start = chrono::high_resolution_clock::now();
 
         Eigen::VectorXd res = A.colPivHouseholderQr().solve(b);
+        
+        
 
         auto end = chrono::high_resolution_clock::now();
         auto duration = duration_cast<chrono::seconds>(end - start).count();
         cout << endl << "solving time = " << duration << " sec" << endl;
-
+        cout << "solve error = " << (A * res - b).norm() << endl;
         vector<double> x(res.data(), res.data() + res.size());
         return x;
     }
@@ -91,7 +93,7 @@ public:
         auto end = chrono::high_resolution_clock::now();
         auto duration = duration_cast<chrono::seconds>(end - start).count();
         cout << endl << "solving time = " << duration << " sec" << endl;
-
+        cout << "solve error = " << (A * res - b).norm() << endl;
         vector<double> x(res.data(), res.data() + res.size());
         return x;
     }
