@@ -19,6 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\VPM_exe\msvcp140d.dll" />
+    <None Include="..\VPM_exe\openal32.dll" />
+    <None Include="..\VPM_exe\sfml-graphics-2.dll" />
+    <None Include="..\VPM_exe\sfml-graphics-d-2.dll" />
+    <None Include="..\VPM_exe\sfml-system-2.dll" />
+    <None Include="..\VPM_exe\sfml-system-d-2.dll" />
+    <None Include="..\VPM_exe\sfml-window-2.dll" />
+    <None Include="..\VPM_exe\sfml-window-d-2.dll" />
+    <None Include="..\VPM_exe\ucrtbased.dll" />
+    <None Include="..\VPM_exe\vcruntime140d.dll" />
+    <None Include="..\VPM_exe\vcruntime140_1d.dll" />
+    <None Include="..\VPM_exe\VortexPanelMethod.exe" />
     <None Include="lib\openal32.dll" />
     <None Include="lib\sfml-audio-2.dll" />
     <None Include="lib\sfml-audio-d-2.dll" />
@@ -49,6 +61,7 @@
     <Image Include="..\fig\streamlines2.gif" />
   </ItemGroup>
   <ItemGroup>
+    <Font Include="..\VPM_exe\font\HomeVideo-Regular.otf" />
     <Font Include="font\arialmt.ttf" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

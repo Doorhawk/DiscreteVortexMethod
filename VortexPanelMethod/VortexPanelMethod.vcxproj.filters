@@ -22,6 +22,12 @@
     <Filter Include="Файлы ресурсов\font">
       <UniqueIdentifier>{9e829c87-4b6d-4557-b800-f72acdbe751d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="VDM_exe">
+      <UniqueIdentifier>{9279c8cb-8b9e-483d-9481-543a8ec2e216}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VDM_exe\font">
+      <UniqueIdentifier>{3147a2d9-707c-441c-afb6-15d3d9261a05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\openal32.dll">
@@ -56,6 +62,42 @@
     </None>
     <None Include="lib\sfml-window-d-2.dll">
       <Filter>Файлы ресурсов\lib</Filter>
+    </None>
+    <None Include="..\VPM_exe\msvcp140d.dll">
+      <Filter>VDM_exe</Filter>
+    </None>
+    <None Include="..\VPM_exe\openal32.dll">
+      <Filter>VDM_exe</Filter>
+    </None>
+    <None Include="..\VPM_exe\sfml-graphics-2.dll">
+      <Filter>VDM_exe</Filter>
+    </None>
+    <None Include="..\VPM_exe\sfml-graphics-d-2.dll">
+      <Filter>VDM_exe</Filter>
+    </None>
+    <None Include="..\VPM_exe\sfml-system-2.dll">
+      <Filter>VDM_exe</Filter>
+    </None>
+    <None Include="..\VPM_exe\sfml-system-d-2.dll">
+      <Filter>VDM_exe</Filter>
+    </None>
+    <None Include="..\VPM_exe\sfml-window-2.dll">
+      <Filter>VDM_exe</Filter>
+    </None>
+    <None Include="..\VPM_exe\sfml-window-d-2.dll">
+      <Filter>VDM_exe</Filter>
+    </None>
+    <None Include="..\VPM_exe\ucrtbased.dll">
+      <Filter>VDM_exe</Filter>
+    </None>
+    <None Include="..\VPM_exe\vcruntime140_1d.dll">
+      <Filter>VDM_exe</Filter>
+    </None>
+    <None Include="..\VPM_exe\vcruntime140d.dll">
+      <Filter>VDM_exe</Filter>
+    </None>
+    <None Include="..\VPM_exe\VortexPanelMethod.exe">
+      <Filter>VDM_exe</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +142,9 @@
   <ItemGroup>
     <Font Include="font\arialmt.ttf">
       <Filter>Файлы ресурсов\font</Filter>
+    </Font>
+    <Font Include="..\VPM_exe\font\HomeVideo-Regular.otf">
+      <Filter>VDM_exe\font</Filter>
     </Font>
   </ItemGroup>
 </Project>
