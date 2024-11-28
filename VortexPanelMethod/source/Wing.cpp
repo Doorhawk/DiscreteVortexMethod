@@ -15,9 +15,10 @@ double oval(double x, bool up) {
         return -sqrt(1 - (2 * x - 1) * (2 * x - 1)) / 2;// +sin(30 * (x - 1)) / 20;
 }
 
-Wing::Wing(int n, double m, double p, double t) {
+Wing::Wing(int n, double m, double p, double t,double h):height(h) {
+    wingAngel = 0;
     solverType = 3;
-    vector<point> vec = getWingCoord(n, m, p, t);
+    vector<point> vec = getWingCoord(n, m, p, t,height);
     for (size_t i = 0, size = vec.size() - 1; i < size; i++) {
         panels.push_back(Panel(vec[i], vec[i + 1]));
     }
@@ -26,13 +27,14 @@ Wing::Wing(int n, double m, double p, double t) {
     Gamma = 0;
     Cy = 0;
 }
-Wing::Wing() {
+Wing::Wing():height(0){
     double m = 0;
     double p = 0;
     double t = 12;
     int n = 101;
+    wingAngel = 0;
     solverType = 3;
-    vector<point> vec = getWingCoord(n, m, p, t);
+    vector<point> vec = getWingCoord(n, m, p, t, height);
     for (size_t i = 0, size = vec.size() - 1; i < size; i++) {
         panels.push_back(Panel(vec[i], vec[i + 1]));
     }
@@ -49,16 +51,21 @@ void Wing::setWingAngle(double angle) {
         wingAngel = angle;
 }
 void Wing::setWingPatametrs(int n, double m, double p, double t) {
+    
     if (n <= 0) {
         n = 1;
     }
     panels.clear();
-    vector<point> vec = getWingCoord(n, m, p, t);
+    vector<point> vec = getWingCoord(n, m, p, t,height);
     for (size_t i = 0, size = vec.size() - 1; i < size; i++) {
         panels.push_back(Panel(vec[i], vec[i + 1]));
     }
     panels.push_back(Panel(vec[vec.size() - 1], vec[0]));
 }
+void Wing::setWingHeight(double h) {
+    height = h;
+}
+
 void Wing::solve() {
     vector<vector<double>> matA = getInfluenceMatrix();
     vector<double> vecB = getRightPart();
@@ -167,7 +174,7 @@ double Wing::NACAwing(double x, double _m, double _p, double _t, bool up) {
         return yc - yt;
 
 }
-vector<point> Wing::getWingCoord(int n, double m, double p, double t) {
+vector<point> Wing::getWingCoord(int n, double m, double p, double t,double h) {
     vector<point> vec;
     double x = 0;
     for (int i = n; i >= 0; i--) {
@@ -186,6 +193,11 @@ vector<point> Wing::getWingCoord(int n, double m, double p, double t) {
         for (auto& v : vec) {
             v = { v.x * cos(rad) - v.y * sin(rad),v.y * cos(rad) + v.x * sin(rad) };
         }
+    }
+    //vec = { {1,1},{0,1},{0,0},{1,0} };
+
+    for (auto& v : vec) {
+        v.y+=h;
     }
     return vec;
 }

@@ -1,6 +1,6 @@
 #include "WindowManager.h"
 
-WindowManager::WindowManager() {
+WindowManager::WindowManager(vector<Wing> _wings):wi(_wings) {
     wWidth = 1000;
 	wHeight = 800;
 	window.create(VideoMode(wWidth, wHeight), L"WingAirForce", Style::Default);
@@ -13,14 +13,19 @@ WindowManager::WindowManager() {
 	n = 101;
 	vel = 10;
 	angle = 0;
-	wing.setWingAngle(angle);
-	wing.setAirflow(vel, 0);
-	wing.setWingPatametrs(n, m, p, t);
 
-    areStreamlines = true;
-    areMoveStreamlines = true;
-    isPresure = true;
-    isAnglePlot = true;
+    wi.setAirflow(vel, 0);
+    for (auto& w : wi.wings)
+        w.setWingPatametrs(n, m, p, t);
+
+	/*wing.setWingAngle(angle);
+	wing.setAirflow(vel, 0);
+	wing.setWingPatametrs(n, m, p, t,h);*/
+
+    areStreamlines = false;
+    areMoveStreamlines = false;
+    isPresure = false;
+    isAnglePlot = false;
     isHelpText = true;
 	solvedangle = angle;
     startLine = 0; 
@@ -28,8 +33,8 @@ WindowManager::WindowManager() {
 
     printStartInf();
 
-    if (!font.loadFromFile("font/HomeVideo-Regular.otf")) { // Убедитесь, что файл шрифта доступен по указанному пути
-        std::cout << "font errror"; // Возвращаем ошибку, если шрифт не загружен
+    if (!font.loadFromFile("font/HomeVideo-Regular.otf")) { 
+        std::cout << "font errror"; 
     }
 }
 void WindowManager::show() {
@@ -51,59 +56,59 @@ void WindowManager::controlButtons(Event event) {
         system("cls");
         if (event.key.code == Keyboard::Z) {
             m -= 1;
-            wing.setWingPatametrs(n, m, p, t);
+            wi.setParametrs(n, m, p, t);
         }
         if (event.key.code == Keyboard::X) {
             m += 1;
-            wing.setWingPatametrs(n, m, p, t);
+            wi.setParametrs(n, m, p, t);
         }
         if (event.key.code == Keyboard::A) {
             p -= 1;
-            wing.setWingPatametrs(n, m, p, t);
+            wi.setParametrs(n, m, p, t);
         }
         if (event.key.code == Keyboard::S) {
             p += 1;
-            wing.setWingPatametrs(n, m, p, t);
+            wi.setParametrs(n, m, p, t);
         }
         if (event.key.code == Keyboard::Q) {
             t -= 1;
-            wing.setWingPatametrs(n, m, p, t);
+            wi.setParametrs(n, m, p, t);
         }
         if (event.key.code == Keyboard::W) {
             t += 1;
-            wing.setWingPatametrs(n, m, p, t);
+            wi.setParametrs(n, m, p, t);
         }
         if (event.key.code == Keyboard::E) {
             n -= 10;
-            wing.setWingPatametrs(n, m, p, t);
+            wi.setParametrs(n, m, p, t);
         }
         if (event.key.code == Keyboard::R) {
             n += 10;
-            wing.setWingPatametrs(n, m, p, t);
+            wi.setParametrs(n, m, p, t);
         }
         if (event.key.code == Keyboard::C) {
             angle -= 0.5;
-            wing.setWingAngle(angle);
-            wing.setWingPatametrs(n, m, p, t);
+            wi.setAngle(angle);
+            wi.setParametrs(n, m, p, t);
         }
         if (event.key.code == Keyboard::V) {
             angle += 0.5;
-            wing.setWingAngle(angle);
-            wing.setWingPatametrs(n, m, p, t);
+            wi.setAngle(angle);
+            wi.setParametrs(n, m, p, t);
         }
         if (event.key.code == Keyboard::Num1) {
-            wing.solverType = 1;
+            wi.solverType = 1;
         }
         if (event.key.code == Keyboard::Num2) {
-            wing.solverType = 2;
+            wi.solverType = 2;
         }
         if (event.key.code == Keyboard::Num3) {
-            wing.solverType = 3;
+            wi.solverType = 3;
         }
         cout << "m" << "\t" << "p" << "\t" << "t" << "\t" << "n" << "\t" << "angle" << endl;
         cout << m << "\t" << p << "\t" << t << "\t" << n << "\t" << angle << endl;
         cout << endl << "Solver: ";
-        switch (wing.solverType)
+        switch (wi.solverType)
         {
         case 1:
             cout << "GaussianMethod";
@@ -120,15 +125,15 @@ void WindowManager::controlButtons(Event event) {
         }
         cout << endl;
         if (event.key.code == Keyboard::Space) {
-            wing.solve();
+            wi.solve();
             streamlines.clear();
-            pressureUp.clear();
-            pressureDown.clear();
-            pressureUp = wing.getPressure(true);
-            pressureDown = wing.getPressure(false);
+            //pressureUp.clear();
+            //pressureDown.clear();
+            //pressureUp = wing.getPressure(true);
+            //pressureDown = wing.getPressure(false);
             createStreamlines();
-            solvedangle = angle;
-            anglePlot.push_back(point(solvedangle, wing.Cy));
+            //solvedangle = angle;
+           //anglePlot.push_back(point(solvedangle, wing.Cy));
         }
         if (event.key.code == Keyboard::L) {
             areStreamlines = areStreamlines ? false : true;
@@ -156,7 +161,13 @@ void WindowManager::controlButtons(Event event) {
             anglePlot.clear();
         }
         cout << endl;
-        cout << "Cy = " << wing.Cy << endl<<endl;
+        double sumCy = 0;
+        for (int i = 0, sizei = wi.wings.size(); i < sizei;i++) {
+            cout << "C"<<i<<" = " << wi.wings[i].Cy << endl;
+            sumCy += wi.wings[i].Cy;
+        }
+        cout << "sum Cy = " << sumCy << endl;
+        cout << endl;
         if (isHelpText) {
             cout << "Control" << endl;
             cout << "m     - Z X" << endl;
@@ -181,7 +192,7 @@ void WindowManager::controlButtons(Event event) {
         {
             double x1 = (event.mouseButton.x - 350) / double(sizeСoeff);
             double y1 = -(event.mouseButton.y - 400) / double(sizeСoeff);
-            std::cout << "|V| = " << wing.getVelocity(point( x1, y1 )).abs() << endl;
+            std::cout << "|V| = " << wi.getVelocity(point( x1, y1 )).abs() << endl;
         }
     }
 }
@@ -197,17 +208,21 @@ void WindowManager::drawFrame() {
     drawText();
 }
 void WindowManager::drawWing() {
-    CircleShape shape(2.f);
-    shape.setFillColor(Color::Black);
-    for (int i = 0, size = wing.panels.size(); i < size; i++) {
-        if (isPresure) {
-            if (i < size / 2)
-                shape.setFillColor(Color::Blue);
-            else
-                shape.setFillColor(Color::Red);
+
+    for (int j = 0, sizej = wi.wings.size(); j < sizej; j++) {
+
+        CircleShape shape(2.f);
+        shape.setFillColor(Color::Black);
+        for (int i = 0, size = wi.wings[j].panels.size(); i < size; i++) {
+            if (isPresure) {
+                if (i < size / 2)
+                    shape.setFillColor(Color::Blue);
+                else
+                    shape.setFillColor(Color::Red);
+            }
+            shape.setPosition(sizeСoeff * wi.wings[j].panels[i].start.x + 350 - 2, 400 - sizeСoeff * wi.wings[j].panels[i].start.y - 2);
+            window.draw(shape);
         }
-        shape.setPosition(sizeСoeff * wing.panels[i].start.x + 350-2, 400 - sizeСoeff * wing.panels[i].start.y-2);
-        window.draw(shape);
     }
 }
 void WindowManager::drawStreamlines() {
@@ -332,7 +347,7 @@ void WindowManager::printStartInf() {
         cout << "t     - Q W" << endl;
         cout << "n     - E R" << endl;
         cout << "angle - C V" << endl;
-        cout << "space - solve" << endl;
+        cout << "solve - space" << endl;
         cout << "|V|   - mouse left" << endl;
         cout << "change solver - 1 2 3" << endl;
         cout << "linestraem is visible - L" << endl;
@@ -353,8 +368,8 @@ void WindowManager::createStreamlines() {
     }
     for (int i = 1; i < iter; i++) {
         for (int j = 0; j < nlin; j++) {
-            point vp = wing.getVelocity(streamlines[j][i - 1]);
-            streamlines[j].push_back(streamlines[j][i - 1] + vp / wing.velocity.abs() * step);
+            point vp = wi.getVelocity(streamlines[j][i - 1]);
+            streamlines[j].push_back(streamlines[j][i - 1] + vp / wi.velocity.abs() * step);
         }
     }
 }

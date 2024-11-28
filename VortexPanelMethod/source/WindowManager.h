@@ -6,11 +6,13 @@
 #include <sstream>
 #include "Wing.h"
 #include "Panel.h"
+#include "SolveWings.h"
+
 using namespace sf;
 using namespace std;
 class WindowManager {
 public:
-    WindowManager();
+    WindowManager(vector<Wing> wings);
     void show();
 private:
     void drawFrame(); 
@@ -29,6 +31,7 @@ private:
     double vel;
     double angle;         // wing angle for draw, it changes by pressing buttons  
     double solvedangle;   // wing angle at last solving
+    SolveWings wi;
     Wing wing;
     vector<vector<point>> streamlines;
     vector<point> pressureUp;
