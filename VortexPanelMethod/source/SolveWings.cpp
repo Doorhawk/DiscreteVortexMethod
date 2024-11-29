@@ -52,14 +52,27 @@ void SolveWings::solve() {
 }
 void SolveWings::setParametrs(int n, double m, double p, double t) {
 
-    for (auto& w : wings)
-        w.setWingPatametrs(n, m, p, t);
+    for (auto& w : wings) {
+        w.setN(n);
+        w.setGeometryParametrs(m, p, t);
+        w.updateGeometry();
+    }
 
+}
+void SolveWings::changeParametrs(int dn, double dm, double dp, double dt, double dangle, point dpos, int wingnum) {
+    int i = wingnum;
+    if (i < 0 || i >= wings.size())
+        return;
+    wings[i].changeParametrs(dn, dm, dp, dt, dangle, dpos);
 }
 void SolveWings::setAngle(double angle) {
     for (auto& w : wings)
+    {
         w.setWingAngle(angle);
+        w.updateGeometry();
+    }
 }
+
 point SolveWings::getVelocity(point x) {
     double Vx = 0;
     double Vy = 0;

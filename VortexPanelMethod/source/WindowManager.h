@@ -24,6 +24,7 @@ private:
     void drawText();
     void printStartInf();
     void createStreamlines();
+    void changeWingParametrs(int dn, double dm, double dp, double dt, double dangle, point dpos);
     double m;
     double p;
     double t;
@@ -31,6 +32,7 @@ private:
     double vel;
     double angle;         // wing angle for draw, it changes by pressing buttons  
     double solvedangle;   // wing angle at last solving
+    int wingNum;
     SolveWings wi;
     Wing wing;
     vector<vector<point>> streamlines;

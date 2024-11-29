@@ -12,8 +12,8 @@ public:
 	void solve();
 	point getVelocity(point x);   
 	void setParametrs(int n, double m, double p, double t);
+	void changeParametrs(int dn, double dm, double dp, double dt,double dangle,point dpos, int wingnum);
 	void setAngle(double angle);
-
 	vector<vector<double>> getInfluenceMatrix();
 	vector<double> getRightPart();
 
