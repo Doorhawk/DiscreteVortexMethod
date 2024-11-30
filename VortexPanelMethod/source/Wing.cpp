@@ -75,7 +75,7 @@ vector<point> Wing::getPressure(point velocity,bool up) {
     if (up) {
         for (size_t i = 0, size = panels.size() / 2 - 1; i < size; i++) {
             double l = (panels[i].vortex - panels[i + 1].vortex).abs();
-            vec[i] = { panels[i].control.x,
+            vec[i] = { -panels[size].control.x+panels[i].control.x,
                 1 - ((panels[i].intensity + panels[i + 1].intensity) / 2 / l / velocity.abs())
                   * ((panels[i].intensity + panels[i + 1].intensity) / 2 / l / velocity.abs()) };
         }
@@ -83,12 +83,12 @@ vector<point> Wing::getPressure(point velocity,bool up) {
     else {
         for (size_t i = panels.size() / 2, size = panels.size() - 1; i < size; i++) {
             double l = (panels[i].vortex - panels[i + 1].vortex).abs();
-            vec[i - panels.size() / 2] = { panels[i].control.x,
+            vec[i - panels.size() / 2] = { -panels[size/2].control.x +panels[i].control.x,
                 1 - ((panels[i].intensity + panels[i + 1].intensity) / 2 / l / velocity.abs())
                   * ((panels[i].intensity + panels[i + 1].intensity) / 2 / l / velocity.abs()) };
         }
     }
-    return vec;
+     return vec;
 }
 
 

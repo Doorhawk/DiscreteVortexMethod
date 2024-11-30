@@ -368,12 +368,12 @@ void WindowManager::drawPressure() {
         CircleShape shape(2.f);
         shape.setFillColor(Color(0, 0, 255));
         for (int i = 0, size = pressureUp[0].size(); i < size; i++) {
-            shape.setPosition(sizeÑoeff * pressureUp[w][i].x + 350, wHeight - sizeÑoeff * scale * pressureUp[w][i].y- height);
+            shape.setPosition(sizeÑoeff * pressureUp[w][i].x+350, wHeight - sizeÑoeff * scale * pressureUp[w][i].y- height);
             windowInf.draw(shape);
         }
         shape.setFillColor(Color(255, 0, 0));
         for (int i = 0, size = pressureDown[0].size(); i < size; i++) {
-            shape.setPosition(sizeÑoeff * pressureDown[w][i].x + 350, wHeight - sizeÑoeff * scale * pressureDown[w][i].y- height);
+            shape.setPosition(sizeÑoeff * pressureDown[w][i].x+350, wHeight - sizeÑoeff * scale * pressureDown[w][i].y- height);
             windowInf.draw(shape);
         }
         sf::VertexArray line(sf::Lines, 2);
