@@ -7,6 +7,7 @@ class SolveWings {
 public:
 	int solverType;
 	point velocity;
+	double sumCl;
 	SolveWings(vector<Wing>& wings);
 	void setAirflow(double _velocity, double angle);
 	void solve();

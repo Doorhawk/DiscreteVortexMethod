@@ -15,6 +15,8 @@ public:
     WindowManager(vector<Wing> wings);
     void show();
 private:
+    void drawInfFrame();
+    void drowWingInf();
     void drawFrame(); 
     void drawWing();     
     void drawStreamlines(); 
@@ -36,10 +38,11 @@ private:
     SolveWings wi;
     Wing wing;
     vector<vector<point>> streamlines;
-    vector<point> pressureUp;
-    vector<point> pressureDown;
+    vector<vector<point>> pressureUp;
+    vector<vector<point>> pressureDown;
     vector<point> anglePlot;
     RenderWindow window;
+    RenderWindow windowInf;
     int wHeight; 
     int wWidth;
     bool areStreamlines;

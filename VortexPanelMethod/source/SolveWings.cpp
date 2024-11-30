@@ -1,7 +1,7 @@
 #include "SolveWings.h"
 
 
-SolveWings::SolveWings(vector<Wing>& wings):wings(wings),solverType(3),velocity(point(1,0)) {
+SolveWings::SolveWings(vector<Wing>& wings):wings(wings),solverType(3),velocity(point(1,0)),sumCl(0) {
 
 }
 void SolveWings::setAirflow(double _velocity, double angle) {
@@ -35,7 +35,7 @@ void SolveWings::solve() {
             x[mi] = 0;
             mi++;
         }
-
+        sumCl = 0;
         for (int i = 0, mi = 0, sizei = wings.size(); i < sizei; i++) {
             double G = 0;
             for (int k = 0, sizek = wings[i].panels.size(); k < sizek; k++, mi++) {
@@ -43,7 +43,7 @@ void SolveWings::solve() {
             }
             mi++;
             wings[i].Gamma = G;
-            wings[i].Cy = G * 2 / velocity.abs() / 1;
+            sumCl+=wings[i].Cy = G * 2 / velocity.abs() / 1;
         }
     }
 
