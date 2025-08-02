@@ -1,7 +1,7 @@
 #include "WindowManager.h"
 
 WindowManager::WindowManager(vector<Wing> _wings):wi(_wings) {
-    wWidth = 1000;
+    wWidth = 900;
 	wHeight = 800;
 	window.create(VideoMode(wWidth, wHeight), L"WingAirForce", Style::Default);
     windowInf.create(VideoMode(wWidth, wHeight), L"WingAirForce", Style::Default);
