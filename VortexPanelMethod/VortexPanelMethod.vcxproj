@@ -44,6 +44,7 @@
     <None Include="lib\sfml-window-d-2.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\SolveWings.cpp" />
     <ClCompile Include="source\VortexPanelMethod.cpp" />
     <ClCompile Include="source\WindowManager.cpp" />
     <ClCompile Include="source\Wing.cpp" />
@@ -52,6 +53,7 @@
     <ClInclude Include="source\Panel.h" />
     <ClInclude Include="source\Point.h" />
     <ClInclude Include="source\solver.h" />
+    <ClInclude Include="source\SolveWings.h" />
     <ClInclude Include="source\WindowManager.h" />
     <ClInclude Include="source\Wing.h" />
   </ItemGroup>

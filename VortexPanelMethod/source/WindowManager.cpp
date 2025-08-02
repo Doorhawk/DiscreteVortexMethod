@@ -1,48 +1,101 @@
 #include "WindowManager.h"
 
-WindowManager::WindowManager() {
-    wWidth = 1000;
+WindowManager::WindowManager(vector<Wing> _wings):wi(_wings) {
+    wWidth = 900;
 	wHeight = 800;
 	window.create(VideoMode(wWidth, wHeight), L"WingAirForce", Style::Default);
+    windowInf.create(VideoMode(wWidth, wHeight), L"WingAirForce", Style::Default);
+    windowInf.setVerticalSyncEnabled(true);
 	window.setVerticalSyncEnabled(true);
 	sizeÑoeff = 350;
-
+    wingNum = -1;
 	m = 0;
 	p = 0;
 	t = 12;
 	n = 101;
 	vel = 10;
 	angle = 0;
-	wing.setWingAngle(angle);
-	wing.setAirflow(vel, 0);
-	wing.setWingPatametrs(n, m, p, t);
 
-    areStreamlines = true;
+    wi.setAirflow(vel, 0);
+    //for (auto& w : wi.wings)
+        //w.setWingPatametrs(n, m, p, t);
+
+	/*wing.setWingAngle(angle);
+	wing.setAirflow(vel, 0);
+	wing.setWingPatametrs(n, m, p, t,h);*/
+
+    areStreamlines = false;
     areMoveStreamlines = true;
     isPresure = true;
-    isAnglePlot = true;
-    isHelpText = true;
+    isAnglePlot = false;
+    isHelpText = false;
 	solvedangle = angle;
     startLine = 0; 
     endLine = 2;
 
     printStartInf();
 
-    if (!font.loadFromFile("font/HomeVideo-Regular.otf")) { // Óáåäèòåñü, ÷òî ôàéë øğèôòà äîñòóïåí ïî óêàçàííîìó ïóòè
-        std::cout << "font errror"; // Âîçâğàùàåì îøèáêó, åñëè øğèôò íå çàãğóæåí
+    if (!font.loadFromFile("font/HomeVideo-Regular.otf")) { 
+        std::cout << "font errror"; 
     }
 }
 void WindowManager::show() {
     while (window.isOpen())
     {
+        Event eventW2;
         Event event;
+        while (windowInf.pollEvent(eventW2)) {
+            controlButtons(eventW2);
+        }
         while (window.pollEvent(event)){
             controlButtons(event);
         }
         window.clear(Color::White);
+        windowInf.clear(Color::White);
         drawFrame();
+        drawInfFrame();
+        windowInf.display();
         window.display();
     }
+}
+void WindowManager::drawInfFrame() {
+    if (isPresure)
+        drawPressure();
+    if (isAnglePlot)
+        drawAnglePlot();
+    drowWingInf();
+}
+void WindowManager::drowWingInf() {
+    Text text;
+    text.setFont(font);
+    text.setCharacterSize(15);
+    text.setFillColor(sf::Color(0, 0, 0));
+    
+    for (int w = 0, sizew = wi.wings.size(); w < sizew; w++) {
+        float scale = 0.25 / (float(sizew - 1) / 2 + 1);
+        float height = (sizew - w) * wHeight / float(sizew + 1);
+        ostringstream oss;
+        oss << "wing " << w<<endl<<endl;
+        oss << wi.wings[w].m << "\t" << wi.wings[w].p << "\t" 
+            << wi.wings[w].t << "\t" << wi.wings[w].n << "\t" 
+            << wi.wings[w].wingAngel << endl<<endl;
+        oss.precision(4);
+        oss << "Cl"<<w <<" = " << wi.wings[w].Cy;
+        string printtext = oss.str();
+        text.setString(printtext);
+        
+        
+        text.setPosition(sizeÑoeff * 0+20, wHeight - sizeÑoeff * scale * 1 - height - 10);
+        windowInf.draw(text);
+    }
+    ostringstream oss;
+    oss << "m" << "\t" << "p" << "\t"
+        << "t" << "\t" << " n" << "\t"
+        << "wingAngel" << endl;
+    string printtext = oss.str();
+    text.setString(printtext);
+    text.setPosition(sizeÑoeff * 0 + 20, 20);
+    windowInf.draw(text);
 }
 void WindowManager::controlButtons(Event event) {
     if (event.type == Event::Closed)
@@ -50,60 +103,96 @@ void WindowManager::controlButtons(Event event) {
     if (event.type == Event::KeyPressed) {
         system("cls");
         if (event.key.code == Keyboard::Z) {
-            m -= 1;
-            wing.setWingPatametrs(n, m, p, t);
+            changeWingParametrs(0, -1, 0, 0, 0, { 0,0 });
         }
         if (event.key.code == Keyboard::X) {
-            m += 1;
-            wing.setWingPatametrs(n, m, p, t);
+            changeWingParametrs(0, 1, 0, 0, 0, { 0,0 });
         }
         if (event.key.code == Keyboard::A) {
-            p -= 1;
-            wing.setWingPatametrs(n, m, p, t);
+            changeWingParametrs(0, 0, -1, 0, 0, { 0,0 });
         }
         if (event.key.code == Keyboard::S) {
-            p += 1;
-            wing.setWingPatametrs(n, m, p, t);
+            changeWingParametrs(0, 0, 1, 0, 0, { 0,0 });
         }
         if (event.key.code == Keyboard::Q) {
-            t -= 1;
-            wing.setWingPatametrs(n, m, p, t);
+            changeWingParametrs(0, 0, 0, -1, 0, { 0,0 });
         }
         if (event.key.code == Keyboard::W) {
-            t += 1;
-            wing.setWingPatametrs(n, m, p, t);
+            changeWingParametrs(0, 0, 0, 1, 0, { 0,0 });
         }
         if (event.key.code == Keyboard::E) {
-            n -= 10;
-            wing.setWingPatametrs(n, m, p, t);
+            changeWingParametrs(-10, 0, 0, 0, 0, { 0,0 });
         }
         if (event.key.code == Keyboard::R) {
-            n += 10;
-            wing.setWingPatametrs(n, m, p, t);
+            changeWingParametrs(+10, 0, 0, 0, 0, { 0,0 });
+        }
+        if (event.key.code == Keyboard::D) {
+            changeWingParametrs(0, 0, 0, 0, -0.5, { 0,0 });
+        }
+        if (event.key.code == Keyboard::F) {
+            changeWingParametrs(0, 0, 0, 0, +0.5, { 0,0 });
+        }
+        if (event.key.code == Keyboard::Up) {
+            changeWingParametrs(0, 0, 0, 0, 0, { 0,0.05 });
+        }
+        if (event.key.code == Keyboard::Down) {
+            changeWingParametrs(0, 0, 0, 0, 0, { 0,-0.05 });
+        }
+        if (event.key.code == Keyboard::Right) {
+            changeWingParametrs(0, 0, 0, 0, 0, { +0.05,0 });
+        }
+        if (event.key.code == Keyboard::Left) {
+            changeWingParametrs(0, 0, 0, 0, 0, { -0.05,0 });
+        }
+        if (event.key.code == Keyboard::Numpad1) {
+
+            if (wi.wings.size() > 1){
+                wi.wings.pop_back();
+                if (wingNum == wi.wings.size())
+                    wingNum--;
+            }
+        }
+        if (event.key.code == Keyboard::Numpad2) {
+            wi.wings.push_back(Wing());
+            wingNum = wi.wings.size() - 1;
+        }
+        if (event.key.code == Keyboard::M) {
+            wingNum++;
+            if (wingNum >= wi.wings.size())
+                wingNum = -1;
+        }
+        if (event.key.code == Keyboard::N) {
+            wingNum--;
+            if (wingNum < -1)
+                wingNum = wi.wings.size()-1;
         }
         if (event.key.code == Keyboard::C) {
             angle -= 0.5;
-            wing.setWingAngle(angle);
-            wing.setWingPatametrs(n, m, p, t);
+            wi.setAirflow(10, angle);
+            //wi.setAngle(angle);
         }
         if (event.key.code == Keyboard::V) {
             angle += 0.5;
-            wing.setWingAngle(angle);
-            wing.setWingPatametrs(n, m, p, t);
+            wi.setAirflow(10, angle);
+            //wi.setAngle(angle);
         }
         if (event.key.code == Keyboard::Num1) {
-            wing.solverType = 1;
+            wi.solverType = 1;
         }
         if (event.key.code == Keyboard::Num2) {
-            wing.solverType = 2;
+            wi.solverType = 2;
         }
         if (event.key.code == Keyboard::Num3) {
-            wing.solverType = 3;
+            wi.solverType = 3;
         }
         cout << "m" << "\t" << "p" << "\t" << "t" << "\t" << "n" << "\t" << "angle" << endl;
-        cout << m << "\t" << p << "\t" << t << "\t" << n << "\t" << angle << endl;
+        if(wingNum!=-1)
+            cout << wi.wings[wingNum].m << "\t" << wi.wings[wingNum].p << "\t" << wi.wings[wingNum].t << "\t" << wi.wings[wingNum].n << "\t" << wi.wings[wingNum].wingAngel<< endl;
+        else
+            cout << wi.wings[0].m << "\t" << wi.wings[0].p << "\t" << wi.wings[0].t << "\t" << wi.wings[0].n << "\t" << wi.wings[0].wingAngel<< endl;
+        cout <<"wing num = " << wingNum << endl;
         cout << endl << "Solver: ";
-        switch (wing.solverType)
+        switch (wi.solverType)
         {
         case 1:
             cout << "GaussianMethod";
@@ -120,15 +209,17 @@ void WindowManager::controlButtons(Event event) {
         }
         cout << endl;
         if (event.key.code == Keyboard::Space) {
-            wing.solve();
+            wi.solve();
             streamlines.clear();
             pressureUp.clear();
             pressureDown.clear();
-            pressureUp = wing.getPressure(true);
-            pressureDown = wing.getPressure(false);
+            for (int i = 0; i < wi.wings.size(); i++) {
+                pressureUp.push_back(wi.wings[i].getPressure(wi.velocity,true));
+                pressureDown.push_back(wi.wings[i].getPressure(wi.velocity,false));
+            }
             createStreamlines();
-            solvedangle = angle;
-            anglePlot.push_back(point(solvedangle, wing.Cy));
+            //solvedangle = angle;
+           //anglePlot.push_back(point(solvedangle, wing.Cy));
         }
         if (event.key.code == Keyboard::L) {
             areStreamlines = areStreamlines ? false : true;
@@ -156,7 +247,13 @@ void WindowManager::controlButtons(Event event) {
             anglePlot.clear();
         }
         cout << endl;
-        cout << "Cy = " << wing.Cy << endl<<endl;
+        double sumCy = 0;
+        for (int i = 0, sizei = wi.wings.size(); i < sizei;i++) {
+            cout << "Cy"<<i<<" = " << wi.wings[i].Cy << endl;
+            sumCy += wi.wings[i].Cy;
+        }
+        cout <<endl<< "sum Cy = " << sumCy << endl;
+        cout << endl;
         if (isHelpText) {
             cout << "Control" << endl;
             cout << "m     - Z X" << endl;
@@ -181,7 +278,7 @@ void WindowManager::controlButtons(Event event) {
         {
             double x1 = (event.mouseButton.x - 350) / double(sizeÑoeff);
             double y1 = -(event.mouseButton.y - 400) / double(sizeÑoeff);
-            std::cout << "|V| = " << wing.getVelocity(point( x1, y1 )).abs() << endl;
+            std::cout << "|V| = " << wi.getVelocity(point( x1, y1 )).abs() << endl;
         }
     }
 }
@@ -190,25 +287,43 @@ void WindowManager::drawFrame() {
     drawWing();
     if (areStreamlines)
         drawStreamlines();
-    if (isPresure)
-        drawPressure();
-    if (isAnglePlot)
-        drawAnglePlot();
     drawText();
 }
 void WindowManager::drawWing() {
-    CircleShape shape(2.f);
-    shape.setFillColor(Color::Black);
-    for (int i = 0, size = wing.panels.size(); i < size; i++) {
-        if (isPresure) {
-            if (i < size / 2)
-                shape.setFillColor(Color::Blue);
-            else
-                shape.setFillColor(Color::Red);
+
+    Text text;
+    text.setFont(font);
+    text.setCharacterSize(15);
+    text.setFillColor(sf::Color(0, 0, 0, 200));
+    
+
+    for (int j = 0, sizej = wi.wings.size(); j < sizej; j++) {
+        text.setString(to_string(j));
+        text.setPosition(sizeÑoeff*wi.wings[j].position.x + 350-20, 400- sizeÑoeff*wi.wings[j].position.y-20);
+        window.draw(text);
+        float r = 2;
+        CircleShape shape(r);
+        if (wingNum == -1)
+            shape.setFillColor(Color::Black);
+        else if (j == wingNum)
+            shape.setFillColor(Color(100, 100, 0));
+        else
+            shape.setFillColor(Color::Black);
+        for (int i = 0, size = wi.wings[j].panels.size(); i < size; i++) {
+            if (isPresure && (j == wingNum || wingNum == -1)) {
+                if (i < size / 2)
+                    shape.setFillColor(Color::Blue);
+                else
+                    shape.setFillColor(Color::Red);
+
+            }
+            shape.setPosition(sizeÑoeff * wi.wings[j].panels[i].start.x + 350 - r, 400 - sizeÑoeff * wi.wings[j].panels[i].start.y - r);
+            window.draw(shape);
         }
-        shape.setPosition(sizeÑoeff * wing.panels[i].start.x + 350-2, 400 - sizeÑoeff * wing.panels[i].start.y-2);
-        window.draw(shape);
     }
+
+
+
 }
 void WindowManager::drawStreamlines() {
     
@@ -245,27 +360,42 @@ void WindowManager::drawStreamlines() {
     }
 }
 void WindowManager::drawPressure() {
-    CircleShape shape(2.f);
-    shape.setFillColor(Color(0, 0, 255));
-    for (int i = 0, size = pressureUp.size(); i < size; i++) {
-        shape.setPosition(sizeÑoeff * pressureUp[i].x + 350, 200 - sizeÑoeff / 4 * pressureUp[i].y);
-        window.draw(shape);
+    if (pressureUp.empty() || pressureDown.empty())
+        return;
+    for (int w = 0,sizew = pressureUp.size(); w <sizew; w++) {
+        float scale = 0.25/(float(sizew-1)/2+1);
+        float height = (sizew - w)*wHeight/float(sizew+1);
+        CircleShape shape(2.f);
+        shape.setFillColor(Color(0, 0, 255));
+        for (int i = 0, size = pressureUp[0].size(); i < size; i++) {
+            shape.setPosition(sizeÑoeff * pressureUp[w][i].x+350, wHeight - sizeÑoeff * scale * pressureUp[w][i].y- height);
+            windowInf.draw(shape);
+        }
+        shape.setFillColor(Color(255, 0, 0));
+        for (int i = 0, size = pressureDown[0].size(); i < size; i++) {
+            shape.setPosition(sizeÑoeff * pressureDown[w][i].x+350, wHeight - sizeÑoeff * scale * pressureDown[w][i].y- height);
+            windowInf.draw(shape);
+        }
+        sf::VertexArray line(sf::Lines, 2);
+        line[0].position = sf::Vector2f(sizeÑoeff * 0 + 350, wHeight - sizeÑoeff * scale * 0- height);
+        line[1].position = sf::Vector2f(sizeÑoeff * 1 + 350, wHeight - sizeÑoeff * scale * 0- height);
+        line[0].color = Color(50, 50, 50);
+        line[1].color = Color(50, 50, 50);
+        windowInf.draw(line);
+        line[0].position = sf::Vector2f(sizeÑoeff * 0 + 350, wHeight - sizeÑoeff * scale * 1- height);
+        line[1].position = sf::Vector2f(sizeÑoeff * 1 + 350, wHeight - sizeÑoeff * scale * 1- height);
+        windowInf.draw(line);
+        Text text;
+        text.setFont(font);
+        text.setFillColor(Color::Black);
+        text.setCharacterSize(15);
+        text.setString(to_string(0));
+        text.setPosition(sizeÑoeff * 0 + 350 - 10, wHeight - sizeÑoeff * scale * 0 - height-10);
+        windowInf.draw(text);
+        text.setString(to_string(1));
+        text.setPosition(sizeÑoeff * 0 + 350 - 10, wHeight - sizeÑoeff * scale * 1 - height-10);
+        windowInf.draw(text);
     }
-    shape.setFillColor(Color(255, 0, 0));
-    for (int i = 0, size = pressureDown.size(); i < size; i++) {
-        shape.setPosition(sizeÑoeff * pressureDown[i].x + 350, 200 - sizeÑoeff / 4 * pressureDown[i].y);
-        window.draw(shape);
-    }
-    sf::VertexArray line(sf::Lines, 2);
-    line[0].position = sf::Vector2f(sizeÑoeff * 0 + 350, 200 - sizeÑoeff / 4 * 0);
-    line[1].position = sf::Vector2f(sizeÑoeff * 1 + 350, 200 - sizeÑoeff / 4 * 0);
-    line[0].color = Color(50, 50, 50);
-    line[1].color = Color(50, 50, 50);
-    window.draw(line);
-    line[0].position = sf::Vector2f(sizeÑoeff * 0 + 350, 200 - sizeÑoeff / 4 * 1);
-    line[1].position = sf::Vector2f(sizeÑoeff * 1 + 350, 200 - sizeÑoeff / 4 * 1);
-    window.draw(line);
-
 }
 void WindowManager::drawAnglePlot() {
     float rad = 3;
@@ -293,22 +423,29 @@ void WindowManager::drawText() {
     Text text;
     text.setFont(font);
     ostringstream oss;
-    oss << "NACA  " << m << p << t << endl
-        << "alpha " <<angle<<endl;
-    oss.precision(3);
-    oss << "Cl    " << wing.Cy;
+    oss.precision(4);
+    oss << "sum Cl     = " << wi.sumCl << endl;
+    oss << "flow angle = " <<angle<<endl;
     string printtext = oss.str();
     text.setString(printtext); 
-    text.setCharacterSize(20); 
-    text.setFillColor(sf::Color(0, 0, 0, 200));
+    text.setCharacterSize(15); 
+    text.setFillColor(sf::Color(0, 0, 0));
     text.setPosition(wWidth / 10, wHeight / 10);
     window.draw(text);
+
+    point vel = wi.velocity / wi.velocity.abs() * 100;
+    sf::VertexArray line(sf::Lines, 2);
+    line[0].position = sf::Vector2f(wWidth / 10., wHeight / 10.+75);
+    line[1].position = sf::Vector2f(wWidth / 10.+vel.x, wHeight / 10.- vel.y+75);
+    line[0].color = Color(Color::Black);
+    line[1].color = Color(Color::Black);
+    window.draw(line);
 }
 void WindowManager::printStartInf() {
     cout << "m" << "\t" << "p" << "\t" << "t" << "\t" << "n" << "\t" << "angle" << endl;
     cout << m << "\t" << p << "\t" << t << "\t" << n << "\t" << angle << endl;
     cout << endl << "Solver: ";
-    switch (wing.solverType)
+    switch (wi.solverType)
     {
     case 1:
         cout << "GaussianMethod";
@@ -332,7 +469,7 @@ void WindowManager::printStartInf() {
         cout << "t     - Q W" << endl;
         cout << "n     - E R" << endl;
         cout << "angle - C V" << endl;
-        cout << "space - solve" << endl;
+        cout << "solve - space" << endl;
         cout << "|V|   - mouse left" << endl;
         cout << "change solver - 1 2 3" << endl;
         cout << "linestraem is visible - L" << endl;
@@ -353,8 +490,24 @@ void WindowManager::createStreamlines() {
     }
     for (int i = 1; i < iter; i++) {
         for (int j = 0; j < nlin; j++) {
-            point vp = wing.getVelocity(streamlines[j][i - 1]);
-            streamlines[j].push_back(streamlines[j][i - 1] + vp / wing.velocity.abs() * step);
+            point vp = wi.getVelocity(streamlines[j][i - 1]);
+            streamlines[j].push_back(streamlines[j][i - 1] + vp / wi.velocity.abs() * step);
+        }
+    }
+}
+void WindowManager::changeWingParametrs(int dn, double dm, double dp, double dt, double dangle, point dpos) {
+    int i = wingNum;
+    
+    if (i < -1 || i >= int(wi.wings.size()))
+        return;
+    if (wingNum != -1) {
+        wi.wings[i].changeParametrs(dn, dm, dp, dt, dangle, dpos);
+        wi.wings[i].updateGeometry();
+    }
+    else {
+        for (auto& w : wi.wings){
+            w.changeParametrs(dn, dm, dp, dt, dangle, dpos);
+            w.updateGeometry();
         }
     }
 }

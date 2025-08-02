@@ -110,6 +110,9 @@
     <ClCompile Include="source\Wing.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="source\SolveWings.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Panel.h">
@@ -125,6 +128,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="source\Wing.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SolveWings.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
